@@ -19,17 +19,11 @@ with open('recipes.txt', 'rt', encoding='utf-8') as recipes:
         recipes.readline() # пропускаем (забираем) пустую строку
         cook_book[dish_name] = ingredients # добавляем в словарь ключь (имя блюда) и значение (словарь ингредиентов)
     # pprint(cook_book)
-        
-# мой первоначальный вариант (недоделанный)
-# def get_shop_list_by_dishes(dishes, person_count=1):
-#     res = {}
-#     for d in dishes:
-#         if d in cook_book.items():
-#             return print(d)
-#             for i, q, m in cook_book[d]:
-                
-#                 return print(d)
-    
+
+
+# Задача 2 
+
+   
 def get_shop_list_by_dishes(person_count: int, dishes: list):
     result = {}
     for dish in dishes: # проходим по списку необходимых блюд
@@ -48,37 +42,40 @@ def get_shop_list_by_dishes(person_count: int, dishes: list):
 get_shop_list_by_dishes(4, ['Омлет', 'Фахитос'])
 
 
+# Задача 3
 
+def all_one_file(folder): # ввести название папки с метом раположения необходимых файлов .txt
+    import os
+    if os.path.exists(folder): # проверяем существует ли данная папка в каталоге
+        carrent = os.getcwd() # узнаем путь к текущей папке
+        fool_path = os.path.join(carrent, folder) # полный путь работающий в любой системе к папке с нужными файлами в проекте
+        # file_list = os.listdir(fool_path) # список нужных файлов
 
+        os.chdir(fool_path) # перехожу в нужную директорию (с файлами)
+        file_list = {}
+        for file_name in os.listdir(fool_path):    
+            if file_name.endswith('.txt'): # проверяем у данного файла расширение .txt
+                with open(file_name, 'rt', encoding='utf-8') as file: # считаем количество строк в файлах .txt
+                    len = 0
+                    text_list = []
+                    for line in file.readlines():
+                        len += 1
+                        text_list.append(line)
+                file_list[file_name] = len, text_list
+        # pprint(file_list)
 
+        sort_file_list = sorted(file_list.items(), key=lambda val: val[1]) # сортируем словарь file_list
+        # pprint(sort_file_list)
 
+        os.chdir('../') # возвращаеся в директорию уровнем выше (в основную папку проекта) где будем создавать новый файл
+        #  в цикле из словаря записать в новый файл
+        with open('res.txt', 'w', encoding='utf-8') as res:
+            for name_file, nam_lines in sort_file_list:
+                res.write(f'{name_file}\n{nam_lines[0]}\n{"".join(nam_lines[1])}\n')
+            path_new_file = os.path.abspath("res.txt") # путь до нового файла
+            return print(f'Сформированный файл находится в {path_new_file}')
+    else:
+        return print('В данном каталоге отсутствует указанная папка с файлами')    
 
-
-import os.path
-import os
-
-def acounting(file:str) -> int:
-    return sum(1 for _ in open('1.txt', 'rt', encoding='utf-8'))
-
-def rewriting(file_for_writing: str, base_path, location):
-    files = []
-    for i in list(os.listdir(os.path.join(base_path, location))):
-        files.append([acounting(os.path.join(base_path, location, i)), os.path.join(base_path, location, i), i])
-    for file_from_list in sorted(files):
-        opening_files = open(file_for_writing, 'a')
-        opening_files.write(f'{file_from_list[2]}\n')
-        opening_files.write(f'{file_from_list[0]}\n')
-        with open(file_from_list[1], 'r',encoding='utf-8') as file:
-            counting = 1
-            for line in file:
-                opening_files.write(f'строка № {counting} в файле {file_from_list[2]} : {line}')
-                counting += 1
-        opening_files.write(f'\n')
-        opening_files.close()
-
-
-
-file_for_writing = os.path.abspath('\\~GreshniK~\\Обучение в Нетологии\\OOP\\1.txt')
-base_path = os.getcwd()
-location = os.path.abspath('\\~GreshniK~\\Обучение в Нетологии\\OOP')
-rewriting(file_for_writing, base_path, location)
+all_one_file('неверное имя папки')
+all_one_file('zadacha_3')
